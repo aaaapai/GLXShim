@@ -29,7 +29,7 @@ struct context_t {
 
 extern "C" {
 
-void *glXGetProcAddress(const char *name) {
+__attribute__((visibility("default"))) void *glXGetProcAddress(const char *name) {
     static context_t ctx;
     void* pfunc = (void*)ctx.eglGetProcAddress(name);
     return pfunc;
