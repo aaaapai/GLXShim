@@ -12,6 +12,12 @@ extern "C" {
 struct context_t {
     context_t() {
         char* eglName = getenv("POJAVEXEC_EGL");
+        if (!eglName)
+            eglName = getenv("LIBEGL_NAME");
+        if (eglName == nullptr) {
+            printf("GLXShim: context init failed: EGL lib envvar not found!\n");
+            return;
+        }
         dl_handle = dlopen(eglName, RTLD_LOCAL|RTLD_LAZY);
         eglGetProcAddress =
                 (eglGetProcAddress_ptr_t)dlsym(dl_handle, "eglGetProcAddress");
