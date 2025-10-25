@@ -41,4 +41,8 @@ __attribute__((visibility("default"))) void *glXGetProcAddress(const char *name)
     return pfunc;
 }
 
+__attribute__((visibility("default"))) void *glXGetProcAddressARB(const char *name) {
+    return glXGetProcAddress(name);
+}
+
 }
