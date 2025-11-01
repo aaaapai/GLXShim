@@ -51,6 +51,7 @@ __attribute__((visibility("default"))) void* glXGetProcAddressARB(const char *na
 }
 
 __attribute__((visibility("default"))) void* eglGetProcAddress(const char *procname) {
+    static context_t ctx;
      return (void*)ctx.eglGetProcAddress(procname);
 }
 
