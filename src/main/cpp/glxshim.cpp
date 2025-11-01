@@ -40,16 +40,20 @@ struct context_t {
 
 extern "C" {
 
-__attribute__((visibility("default"))) eglFuncPointer glXGetProcAddress(const char *name) {
+__attribute__((visibility("default"))) void* glXGetProcAddress(const char *name) {
     static context_t ctx;
     void* pfunc = (void*)ctx.sys_eglGetProcAddress(name);
+    if(!func){
+        fprintf(stderr, "GLXShim: Unknown function %s!\n", proc);
+        return nullptr;
+    }
     return pfunc;
 }
 
-__attribute__((visibility("default"))) eglFuncPointer glXGetProcAddressARB(const char *name) {
+__attribute__((visibility("default"))) void* glXGetProcAddressARB(const char *name) {
     return glXGetProcAddress(name);
 }
 
-__attribute__((visibility("default"))) eglFuncPointer eglGetProcAddress(const char *name) {
+__attribute__((visibility("default"))) void* eglGetProcAddress(const char *name) {
      return glXGetProcAddress(name);
 }
