@@ -39,7 +39,7 @@ extern "C" {
 __attribute__((visibility("default"))) void* glXGetProcAddress(const char *name) {
     static context_t ctx;
     void* pfunc = (void*)ctx.eglGetProcAddress(name);
-    if(!func){
+    if(!pfunc){
         fprintf(stderr, "GLXShim: Unknown function %s!\n", proc);
         return nullptr;
     }
