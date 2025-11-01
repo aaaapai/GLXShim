@@ -2,10 +2,6 @@
 #include <string.h>
 #include <dlfcn.h>
 
-#include <EGL/egl.h>
-
-eglFuncPointer (*sys_eglGetProcAddress)(const char* proc);
-
 extern "C" {
     typedef void (*__eglMustCastToProperFunctionPointerType)(void);
 
@@ -24,9 +20,9 @@ struct context_t {
             return;
         }
         dl_handle = dlopen(eglName, RTLD_LOCAL|RTLD_LAZY);
-        sys_eglGetProcAddress =
+        eglGetProcAddress =
                 (eglGetProcAddress_ptr_t)dlsym(dl_handle, "eglGetProcAddress");
-        if (sys_eglGetProcAddress == nullptr) {
+        if (eglGetProcAddress == nullptr) {
             printf("GLXShim: context init failed: %s\n", dlerror());
         }
     }
@@ -35,14 +31,14 @@ struct context_t {
         dlclose(dl_handle);
     }
     void* dl_handle = nullptr;
-    eglGetProcAddress_ptr_t sys_eglGetProcAddress = nullptr;
+    eglGetProcAddress_ptr_t eglGetProcAddress = nullptr;
 };
 
 extern "C" {
 
 __attribute__((visibility("default"))) void* glXGetProcAddress(const char *name) {
     static context_t ctx;
-    void* pfunc = (void*)ctx.sys_eglGetProcAddress(name);
+    void* pfunc = (void*)ctx.eglGetProcAddress(name);
     if(!func){
         fprintf(stderr, "GLXShim: Unknown function %s!\n", proc);
         return nullptr;
