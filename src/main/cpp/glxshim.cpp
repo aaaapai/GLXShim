@@ -19,7 +19,10 @@ struct context_t {
             printf("GLXShim: context init failed: EGL lib envvar not found!\n");
             return;
         }
-        dl_handle = dlopen(eglName, RTLD_LOCAL|RTLD_LAZY);
+        dl_handle = dlopen(eglName, RTLD_NOLOAD);
+        if (!dl_handle) {
+           dl_handle = dlopen(eglName, RTLD_LOCAL|RTLD_LAZY);
+        }
         eglGetProcAddress =
                 (eglGetProcAddress_ptr_t)dlsym(dl_handle, "eglGetProcAddress");
         if (eglGetProcAddress == nullptr) {
@@ -27,9 +30,6 @@ struct context_t {
         }
     }
 
-    ~context_t() {
-        dlclose(dl_handle);
-    }
     void* dl_handle = nullptr;
     eglGetProcAddress_ptr_t eglGetProcAddress = nullptr;
 };
@@ -40,7 +40,7 @@ __attribute__((visibility("default"))) void* glXGetProcAddress(const char *name)
     static context_t ctx;
     void* pfunc = (void*)ctx.eglGetProcAddress(name);
     if(!pfunc){
-        fprintf(stderr, "GLXShim: Unknown function %s!\n", pfunc);
+        printf("GLXShim: Unknown function %s!\n", name);
         return nullptr;
     }
     return pfunc;
