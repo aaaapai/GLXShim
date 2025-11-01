@@ -40,7 +40,7 @@ __attribute__((visibility("default"))) void* glXGetProcAddress(const char *name)
     static context_t ctx;
     void* pfunc = (void*)ctx.eglGetProcAddress(name);
     if(!pfunc){
-        fprintf(stderr, "GLXShim: Unknown function %s!\n", proc);
+        fprintf(stderr, "GLXShim: Unknown function %s!\n", pfunc);
         return nullptr;
     }
     return pfunc;
